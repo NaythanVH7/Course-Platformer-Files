@@ -23,7 +23,6 @@ Player.prototype.update = function(deltaTime)
 	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
 	{
 		this.rotation -= deltaTime;
-		console.log("turning");
 	}
 	else
 	{
