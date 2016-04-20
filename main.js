@@ -32,14 +32,14 @@ function getDeltaTime()
 var SCREEN_WIDTH = canvas.width;
 var SCREEN_HEIGHT = canvas.height;
 
-var LAYER_COUNT = 2;
+var LAYER_COUNT = 3;
 var TILESET_PADDING = 2;
 var TILESET_SPACING = 2;
 var TILESET_COUNT_X = 14;
 var TILESET_COUNT_Y = 14;
 var TILE = 35;
 var TILESET_TILE = TILE * 2;
-var MAP = {tw: 60, th: 15};
+var MAP = {tw: 35, th: 35};
 
 
 // some variables to calculate the Frames Per Second (FPS - this tells use
