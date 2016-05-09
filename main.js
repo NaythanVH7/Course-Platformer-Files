@@ -44,6 +44,17 @@ var TILE = 35;
 var TILESET_TILE = TILE * 2;
 var MAP = {tw: 35, th: 35};
 
+/*
+	var tx = pixelToTile(player.x),
+		ty = pixelToTile(player.y),
+		nx = player.x%TILE, 		//true if player overlaps right
+		ny = player.y%TILE, 		//true if plauer overlaps below
+		cell = cellAtTileCoord(tx,ty),
+		cellright = cellAtTileCoord(tx + 1, ty),
+		celldown = cellAtTileCoord(tx, ty + 1),
+		celldiag = cellAtTileCoord(tx + 1, ty + 1);
+*/
+
 var METER = TILE; //abitrary choice for 1m
 
 var GRAVITY = METER * 9.8 * 6;  //very exaggerated gravity (6x)
@@ -105,7 +116,7 @@ function initialize()
 				{
 					cells[layerIdx][y][x] = 0; 	//if the value of the cell isnt set. set it to 0 now.
 				}
-				idx++
+				idx++;
 			}
 		}
 	}
@@ -130,7 +141,8 @@ function cellAtTileCoord(layer, tx, ty)
 	//if so, player dies.
 	if(ty>=MAP.th)
 		return 0;
-	return cells[layer][tx][ty];
+	return cells[layer][ty][tx];
+	console.log(tx);
 };
 
 function tileToPixel(tile)
@@ -183,6 +195,34 @@ function drawMap()
 	}
 }
 
+/*
+//DEBUG DRAW LEVEL COLLISION DATA
+function DrawLevelCollisionData(tileLayer) {
+    for (var y = 0; y < level1.layers[tileLayer].height; y++) {
+        for (var x = 0; x < level1.layers[tileLayer].width; x++) {
+            if (cells[tileLayer][y][x] == 1) {
+                context.fillStyle = "#F00";
+                context.fillRect(TILE * x, TILE * y, TILE, TILE);
+            }
+        }
+    }
+}
+//DEBUG DRAW PLAYER CELL COLLISION DATA
+//fill in value of cell
+        context.fillStyle = "#00F";
+        context.fillRect(tx * 35, ty * 35,35,35);
+        //fill in value of cellRight
+        context.fillStyle = "#0FF";
+        context.fillRect((tx+1) * 35, ty * 35,35,35);
+        //fill in value of cellDown
+        context.fillStyle = "#F90";
+        context.fillRect(tx * 35, (ty+1) * 35,35,35);
+        //fill in value of cellDiag
+        context.fillStyle = "#F0F";
+        context.fillRect((tx+1) * 35, (ty+1) * 35,35,35);
+        */
+
+
 function run()
 {
 	context.fillStyle = "#ccc";		
@@ -191,6 +231,8 @@ function run()
 	var deltaTime = getDeltaTime();
 
 	drawMap();
+
+	//DrawLevelCollisionData(tileLayer);
 
 	player.update(deltaTime);
 	
@@ -216,6 +258,8 @@ function run()
 	context.fillStyle = "#f00";
 	context.font="14px Arial";
 	context.fillText("FPS: " + fps, 5, 20, 100);
+
+	console.log(tx);
 }
 
 initialize();

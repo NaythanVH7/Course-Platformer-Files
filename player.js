@@ -33,7 +33,7 @@ var Player = function()
 
 	for(var i=0; i<ANIM_MAX; i++)
 	{
-		this.sprite.setAnimaionOffset(i, -55, -87);
+		this.sprite.setAnimationOffset(i, -55, -87);
 	}
 
 	//this.image = document.createElement("img");
@@ -176,4 +176,8 @@ Player.prototype.update = function(deltaTime)
 			this.velocity.x = 0; 		//stop horizontal velocity
 		}
 	}
+
+	player.falling = !(celldown || (nx && celldiag));
+
+	console.log(tx);
 }
