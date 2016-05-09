@@ -191,7 +191,6 @@ function run()
 	var deltaTime = getDeltaTime();
 
 	drawMap();
-	sprite();
 
 	player.update(deltaTime);
 	
