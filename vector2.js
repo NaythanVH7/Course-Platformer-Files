@@ -1,7 +1,7 @@
 var Vector2 = function (nX, nY)
 {
-	this.x = nX;
-	this.y = nY;
+	this.x = 0;
+	this.y = 0;
 }
 
 Vector2.prototype.Magnitude = function ()

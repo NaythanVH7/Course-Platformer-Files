@@ -12,6 +12,10 @@ var ANIM_MAX = 6;
 // this creates the player object and assigns it some properties
 var Player = function()
 {
+
+	this.tx = 0;
+	this.ty = 0;
+
 	this.sprite = new Sprite("ChuckNorris.png");
 	this.sprite.buildAnimation(12, 8, 165, 126, 0.05, 
 						[0, 1, 2, 3, 4, 5, 6, 7]);
@@ -46,14 +50,44 @@ var Player = function()
 	//this.offset = new Vector2();
 	//this.offset.set(-55, -87);
 
-	//this.position = new Vector2(this.x, this.y);s
+	//this.position = new Vector2(this.x, this.y);
 	this.velocity = new Vector2();
 
 	this.falling = true;
 	this.jumping = false;
 
 	this.direction = LEFT;
+
+
+
+	//DEBUG DRAW LEVEL COLLISION DATA
+function DrawLevelCollisionData(tileLayer) {
+    for (var y = 0; y < level1.layers[tileLayer].height; y++) {
+        for (var x = 0; x < level1.layers[tileLayer].width; x++) {
+            if (cells[tileLayer][y][x] == 1) {
+                context.fillStyle = "#F00";
+                context.fillRect(TILE * x, TILE * y, TILE, TILE);
+            }
+        }
+    }
+}
+//DEBUG DRAW PLAYER CELL COLLISION DATA
+//fill in value of cell
+        context.fillStyle = "#00F";
+        context.fillRect(this.tx * 35, this.ty * 35,35,35);
+        //fill in value of cellRight
+        context.fillStyle = "#0FF";
+        context.fillRect((this.tx+1) * 35, this.ty * 35,35,35);
+        //fill in value of cellDown
+        context.fillStyle = "#F90";
+        context.fillRect(this.tx * 35, (this.ty+1) * 35,35,35);
+        //fill in value of cellDiag
+        context.fillStyle = "#F0F";
+        context.fillRect((this.tx+1) * 35, (this.ty+1) * 35,35,35);
+
 };
+
+
 
 Player.prototype.update = function(deltaTime)
 {
@@ -124,7 +158,9 @@ Player.prototype.update = function(deltaTime)
 	var ty = pixelToTile(this.position.y);
 	var nx = (this.position.x)%TILE; //true is player overlaps right
 	var ny = (this.position.y)%TILE; //true is player overlaps below
+	console.log(player.position.x, player.position.y);
 	var cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
+	console.log(tx);
 	var cellright = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty);
 	var celldown = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
 	var celldiag = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty + 1);
