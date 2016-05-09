@@ -154,16 +154,15 @@ Player.prototype.update = function(deltaTime)
 	}
 
 		//collision detection
-	var tx = pixelToTile(this.position.x);
-	var ty = pixelToTile(this.position.y);
-	var nx = (this.position.x)%TILE; //true is player overlaps right
-	var ny = (this.position.y)%TILE; //true is player overlaps below
+	tx = pixelToTile(this.position.x);
+	ty = pixelToTile(this.position.y);
+	nx = (this.position.x)%TILE; //true is player overlaps right
+	ny = (this.position.y)%TILE; //true is player overlaps below
 	console.log(player.position.x, player.position.y);
-	var cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
-	console.log(tx);
-	var cellright = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty);
-	var celldown = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
-	var celldiag = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty + 1);
+	cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
+	cellright = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty);
+	celldown = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
+	celldiag = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty + 1);
 
 		//if the plauer ha vertical velocity, check to see if they have hit
 		//a platform above or below, if so, stop the vertical velocity
