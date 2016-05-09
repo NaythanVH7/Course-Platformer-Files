@@ -216,3 +216,8 @@ Player.prototype.update = function(deltaTime)
 
 	console.log(tx);
 }
+
+Player.prototype.draw = function()
+{
+	this.sprite.draw(context, this.position.x, this.position.y);
+}

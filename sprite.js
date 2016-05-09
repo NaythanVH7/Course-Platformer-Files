@@ -11,7 +11,7 @@ var Sprite = function(filename) {
 	if(filename != null)
 	{
 		this.image = document.createElement("img");
-		this.image.src = filename;
+		this.image.src = "ChuckNorris.png";
 	}
 	
 	this.currentAnimation = 0;
