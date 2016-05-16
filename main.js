@@ -42,7 +42,13 @@ var TILESET_COUNT_X = 14;
 var TILESET_COUNT_Y = 14;
 var TILE = 35;
 var TILESET_TILE = TILE * 2;
-var MAP = {tw: 35, th: 35};
+var MAP = {tw: 60, th: 15};
+
+var score = 0;
+
+var lives = 3;
+
+var worldOffsetX = 0;
 
 /*
 	var tx = pixelToTile(player.x),
@@ -79,6 +85,9 @@ var fpsTime = 0;
 
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
+
+var heart = document.createElement("img");
+heart.src = "heart.png";
 
 var player = new Player();
 var keyboard = new Keyboard();
@@ -161,12 +170,34 @@ function bound(value, min, max)
 
 function drawMap()
 {
+	var startX = -1;
+	var maxTiles = Math.floor(SCREEN_WIDTH / TILE) + 2;
+	var tileX = pixelToTile(player.position.x);
+	var offsetX = TILE + Math.floor(player.position.x%TILE);
+
+	startX = tileX - Math.floor(maxTiles / 2);
+
+	if(startX < -1)
+	{
+		startX = 0;
+		offsetX = 0;
+	}
+	if(startX > MAP.tw - maxTiles)
+	{
+		startX = MAP.tw - maxTiles + 1;
+		offsetX = TILE;
+	}
+
+	worldOffsetX = startX * TILE + offsetX;
+
+
 	for(var layerIdx=0; layerIdx<LAYER_COUNT; layerIdx++)
 	{
-		var idx =0;
+		//var idx =0;
 		for(var y=0; y<level1.layers[layerIdx].height; y++)
 		{
-			for(var x=0; x<level1.layers[layerIdx].width; x++)
+			var idx = y * level1.layers[layerIdx].width + startX;
+			for(var x = startX; x < startX + maxTiles; x++)
 			{
 				if(level1.layers[layerIdx].data[idx] !=0)
 				{
@@ -217,6 +248,20 @@ function run()
 	context.fillStyle = "#f00";
 	context.font="14px Arial";
 	context.fillText("FPS: " + fps, 5, 20, 100);
+
+	//score
+	context.fillStyle = "yellow";
+	context.font="32px Arial";
+	var scoreText = "Score: " + score;
+	context.fillText(scoreText, SCREEN_WIDTH - 170, 35);
+
+	//life counter
+	for(var i=0; i<lives; i++)
+	{
+		context.drawImage(heart, 20 + ((heart.width+2)*1), 10);
+	}
+
+
 }
 
 initialize();
