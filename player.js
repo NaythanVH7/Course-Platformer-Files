@@ -254,6 +254,6 @@ Player.prototype.update = function(deltaTime)
 
 Player.prototype.draw = function()
 {
-	var screenX = this.position.x - worldOffsetX;
-	this.sprite.draw(context, this.position.x, - worldOffsetX, this.position.y);
+	//var screenX = this.position.x - worldOffsetX;
+	this.sprite.draw(context, this.position.x - worldOffsetX, this.position.y);
 }

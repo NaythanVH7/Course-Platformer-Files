@@ -50,17 +50,6 @@ var lives = 3;
 
 var worldOffsetX = 0;
 
-/*
-	var tx = pixelToTile(player.x),
-		ty = pixelToTile(player.y),
-		nx = player.x%TILE, 		//true if player overlaps right
-		ny = player.y%TILE, 		//true if plauer overlaps below
-		cell = cellAtTileCoord(tx,ty),
-		cellright = cellAtTileCoord(tx + 1, ty),
-		celldown = cellAtTileCoord(tx, ty + 1),
-		celldiag = cellAtTileCoord(tx + 1, ty + 1);
-*/
-
 var METER = TILE; //abitrary choice for 1m
 
 var GRAVITY = METER * 9.8 * 6;  //very exaggerated gravity (6x)
@@ -91,6 +80,40 @@ heart.src = "heart.png";
 
 var player = new Player();
 var keyboard = new Keyboard();
+
+/*
+var music = new music = new Howl(
+{
+	urls: ["background.ogg"],
+	loop: true,
+	buffer: true,
+	volume: 0.5
+} );
+music.play();
+
+var sfx = new Howl(
+{
+	urls: ["fireEffect.ogg"],
+	buffer: true,
+	volume: 1,
+	onend: function()
+	{
+		isSfxPlaying = false;
+	}
+} );
+*/
+
+		//adds colours to the platforms that the player will collide with.
+/*function DrawLevelCollisionData(tileLayer) {
+    for (var y = 0; y < level1.layers[tileLayer].height; y++) {
+        for (var x = 0; x < level1.layers[tileLayer].width; x++) {
+            if (cells[tileLayer][y][x] == 1) {
+                context.fillStyle = "#F00";
+                context.fillRect(TILE * x, TILE * y, TILE, TILE);
+            }
+        }
+    }
+}*/
 
 var cells =[];
 
@@ -189,11 +212,11 @@ function drawMap()
 	}
 
 	worldOffsetX = startX * TILE + offsetX;
+	console.log(offsetX);
 
 
 	for(var layerIdx=0; layerIdx<LAYER_COUNT; layerIdx++)
 	{
-		//var idx =0;
 		for(var y=0; y<level1.layers[layerIdx].height; y++)
 		{
 			var idx = y * level1.layers[layerIdx].width + startX;
@@ -212,8 +235,9 @@ function drawMap()
 					(TILESET_TILE + TILESET_SPACING);
 					var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * 
 					(TILESET_TILE + TILESET_SPACING);
-					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, x*TILE,
-						(y-1)*TILE, TILESET_TILE, TILESET_TILE);
+					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, 
+									(x - startX) * TILE - offsetX, (y-1)*TILE,
+									TILESET_TILE, TILESET_TILE);
 				}
 				idx++;
 			}
@@ -228,10 +252,13 @@ function run()
 	
 	var deltaTime = getDeltaTime();
 
-	drawMap();
-
 	player.update(deltaTime);
+
+	drawMap();
 	player.draw();
+
+		//pass 1, 2, 3 for the layer of tiles that you want to be highlighted.
+	//DrawLevelCollisionData(1);
 	
 		
 	// update the frame counter 
