@@ -144,6 +144,11 @@ Player.prototype.update = function(deltaTime)
 		{
 			this.sprite.setAnimation(ANIM_JUMP_RIGHT);
 		}
+
+		if(jump == true)
+		{
+			sfx.play();
+		}
 	}
 
 	var wasleft = this.velocity.x < 0;

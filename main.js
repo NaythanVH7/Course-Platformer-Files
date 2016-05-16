@@ -81,27 +81,42 @@ heart.src = "heart.png";
 var player = new Player();
 var keyboard = new Keyboard();
 
-/*
-var music = new music = new Howl(
+var STATE_SPLASH = 0;
+var STATE_GAME = 1;
+var STATE_GAMEOVER = 2;
+
+var gameState = STATE_SPLASH;
+
+var splashTimer = 3;
+
+switch(gameState)
+{
+	case STATE_SPLASH: 		//process the splash screen
+		break;
+	case STATE_GAME: 		//process the game state
+		break;
+	case STATE_GAMEOVER: 	//process the gameover state
+		break;
+}
+
+
+var music = new Howl(
 {
 	urls: ["background.ogg"],
 	loop: true,
 	buffer: true,
-	volume: 0.5
+	volume: 0.3
 } );
 music.play();
 
 var sfx = new Howl(
 {
-	urls: ["fireEffect.ogg"],
+	urls: ["jumppp11.ogg"],
 	buffer: true,
 	volume: 1,
-	onend: function()
-	{
-		isSfxPlaying = false;
-	}
+	loop: false
 } );
-*/
+
 
 		//adds colours to the platforms that the player will collide with.
 /*function DrawLevelCollisionData(tileLayer) {
@@ -245,22 +260,27 @@ function drawMap()
 	}
 }
 
-function run()
+function runSplash(deltaTime)
 {
-	context.fillStyle = "#ccc";		
-	context.fillRect(0, 0, canvas.width, canvas.height);
-	
-	var deltaTime = getDeltaTime();
+	splashTimer -= deltaTime;
+	if(splashTimer <= 0)
+	{
+		splashTimer = 3;
+		player.isDead = false;
+		score = 0;
 
+		gameState = STATE_GAME;
+		return;
+	}
+}
+
+function runGame(deltaTime)
+{
 	player.update(deltaTime);
 
 	drawMap();
 	player.draw();
 
-		//pass 1, 2, 3 for the layer of tiles that you want to be highlighted.
-	//DrawLevelCollisionData(1);
-	
-		
 	// update the frame counter 
 	fpsTime += deltaTime;
 	fpsCount++;
@@ -286,6 +306,63 @@ function run()
 	for(var i=0; i<lives; i++)
 	{
 		context.drawImage(heart, 20 + ((heart.width+2)*1), 10);
+	}
+
+	if(player.position.y > SCREEN_HEIGHT)
+	{
+		player.position.x = SCREEN_WIDTH / 2;
+		player.position.y = SCREEN_HEIGHT / 2;
+		lives = lives -1;
+	}
+
+	if(lives == 0)
+	{
+		player.isDead = true;
+		runGameOver(deltaTime);
+	}
+}
+
+function runGameOver(deltaTime)
+{
+	context.fillStyle = "#FFFFFF";
+	context.font = "24px Arial";
+	context.fillStyle = "#FF0000";
+	context.fillText("Game Over", 240, 240);
+	context.fillStyle = "#FFFFFF";
+	context.fillText("Your Score, " +score, 230, 280);
+}
+
+function runWinGame(deltaTime)
+{
+	context.fillStyle = "#FFFFFF";
+	context.font = "48px Arial";
+	context.fillStyle = "#FF0000";
+	context.fillText("You Win!", 200, 200);
+	context.fillStyle = "#FFFFFF";
+	context.fillText("Your Score, " +score, 230, 280);
+}
+
+function run()
+{
+	context.fillStyle = "#ccc";		
+	context.fillRect(0, 0, canvas.width, canvas.height);
+	
+	var deltaTime = getDeltaTime();
+
+		//pass 1, 2, 3 for the layer of tiles that you want to be highlighted.
+	//DrawLevelCollisionData(1);
+
+	switch(gameState)
+	{
+		case STATE_SPLASH:
+				runSplash(deltaTime);
+				break;
+		case STATE_GAME:
+				runGame(deltaTime);
+				break;
+		case STATE_GAMEOVER:
+				runGameOver(deltaTime);
+				break;
 	}
 
 
