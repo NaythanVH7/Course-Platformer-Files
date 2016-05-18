@@ -47,9 +47,6 @@ var Player = function()
 	this.width = 159;
 	this.height = 163;
 
-	//this.offset = new Vector2();
-	//this.offset.set(-55, -87);
-
 	//this.position = new Vector2(this.x, this.y);
 	this.velocity = new Vector2();
 
@@ -57,37 +54,6 @@ var Player = function()
 	this.jumping = false;
 
 	this.direction = LEFT;
-
-
-
-	//DEBUG DRAW LEVEL COLLISION DATA
-function DrawLevelCollisionData(tileLayer) {
-    for (var y = 0; y < level1.layers[tileLayer].height; y++) {
-        for (var x = 0; x < level1.layers[tileLayer].width; x++) {
-            if (cells[tileLayer][y][x] == 1) {
-                context.fillStyle = "#F00";
-                context.fillRect(TILE * x, TILE * y, TILE, TILE);
-            }
-        }
-    }
-}
-//DEBUG DRAW PLAYER CELL COLLISION DATA
-//fill in value of cell
-        context.fillStyle = "#00F";
-        context.fillRect(this.tx * 35, this.ty * 35,35,35);
-        //fill in value of cellRight
-        context.fillStyle = "#0FF";
-        context.fillRect((this.tx+1) * 35, this.ty * 35,35,35);
-        //fill in value of cellDown
-        context.fillStyle = "#F90";
-        context.fillRect(this.tx * 35, (this.ty+1) * 35,35,35);
-        //fill in value of cellDiag
-        context.fillStyle = "#F0F";
-        context.fillRect((this.tx+1) * 35, (this.ty+1) * 35,35,35);
-
-};
-
-
 
 Player.prototype.update = function(deltaTime)
 {
@@ -145,10 +111,10 @@ Player.prototype.update = function(deltaTime)
 			this.sprite.setAnimation(ANIM_JUMP_RIGHT);
 		}
 
-		if(jump == true)
+		/*if(jump && !this.jumping && !falling == true)
 		{
 			sfx.play();
-		}
+		}*/
 	}
 
 	var wasleft = this.velocity.x < 0;
@@ -179,6 +145,7 @@ Player.prototype.update = function(deltaTime)
 	{
 		ddy = ddy - JUMP; 		//apply an instantaneous (large) vertical impulse
 		this.jumping = true;
+		sfx.play();
 	}
 
 	//calculate the new position and velocity
@@ -253,8 +220,6 @@ Player.prototype.update = function(deltaTime)
 	}
 
 	player.falling = !(celldown || (nx && celldiag));
-
-	console.log(tx);
 }
 
 Player.prototype.draw = function()

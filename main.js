@@ -48,6 +48,8 @@ var score = 0;
 
 var lives = 3;
 
+var time = 5;
+
 var worldOffsetX = 0;
 
 var METER = TILE; //abitrary choice for 1m
@@ -272,6 +274,11 @@ function runSplash(deltaTime)
 		gameState = STATE_GAME;
 		return;
 	}
+
+	context.fillStyle = "#000";
+	context.font = "24px Arial";
+	context.fillText("Super Awesome Platforming Adventure", 100, 240);
+	context.fillText("STARTING IN " + splashTimer.toPrecision(3), 200, 350);
 }
 
 function runGame(deltaTime)
@@ -320,6 +327,19 @@ function runGame(deltaTime)
 		player.isDead = true;
 		runGameOver(deltaTime);
 	}
+
+	time -= deltaTime;
+
+	context.fillStyle = "red";
+	context.font="18px Arial";
+	context.fillText("Time: " + time.toPrecision(3), 300, 20);
+
+	if(time <= 0)
+	{
+		lives = 0;
+		player.isDead = true;
+		runGameOver(deltaTime);
+	}
 }
 
 function runGameOver(deltaTime)
@@ -329,7 +349,7 @@ function runGameOver(deltaTime)
 	context.fillStyle = "#FF0000";
 	context.fillText("Game Over", 240, 240);
 	context.fillStyle = "#FFFFFF";
-	context.fillText("Your Score, " +score, 230, 280);
+	context.fillText("Your Score: " +score, 230, 280);
 }
 
 function runWinGame(deltaTime)
