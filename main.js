@@ -169,33 +169,26 @@ function initialize()
 		}
 	}
 
-	for(var layerIdx = 0; layerIdx < LAYER_COUNT; layerIdx++)
+	//initialize trigger layer in collision map.
+	cells[LAYER_TRIGGERS] = [];
+	idx = 0;
+	for(var y = 0; y < level1.layers[LAYER_TRIGGERS].height; y++)
 	{
-		cells[layerIdx] = [];
-		var idx = 0;
-		for(var y = 0; y < level1.layers[layerIdx].height; y++)
+		cells[LAYER_TRIGGERS][y] = [];
+		for(var x = 0; x < level1.layers[LAYER_TRIGGERS].width; x++)
 		{
-			cells[layerIdx][y] = [];
-			for(var x = 0; x < level1.layers[layerIdx].width; x++)
+			if(level1.layers[LAYER_TRIGGERS].data[idx] != 0)
 			{
-				if(level1.layers[layerIdx].data[idx] !=0)
-				{
-					/*
-						for each tile we find in the layer data, we need to create 4 collisions
-						(becjause out collision squares are 35x35 but the tile in the level
-						are 70x70)
-					*/
-					cells[layerIdx][y][x] = 1;
-					cells[layerIdx][y-1][x] = 1;
-					cells[layerIdx][y-1][x+1] = 1;
-					cells[layerIdx][y][x+1] = 1;
-				}
-				else if(cells[layerIdx][y][x] !=1)
-				{
-					cells[layerIdx][y][x] = 0; 	//if the value of the cell isnt set. set it to 0 now.
-				}
-				idx++;
+				cells[LAYER_TRIGGERS][y][x] = 1;
+				cells[LAYER_TRIGGERS][y-1][x] = 1;
+				cells[LAYER_TRIGGERS][y-1][x+1] = 1;
+				cells[LAYER_TRIGGERS][y][x+1] = 1;
 			}
+			else if(cells[LAYER_TRIGGERS][y][x] !=1)
+			{
+				cells[LAYER_TRIGGERS][y][x] = 0;
+			}
+			idx++;
 		}
 	}
 }
@@ -376,15 +369,6 @@ function runGame(deltaTime)
 		runGameOver(deltaTime);
 		gameState = STATE_GAMEOVER;
 	}
-
-	/*var triggerX = pixelToTile(58 * TILE);
-	var triggerY = pixelToTile(12 * TILE);
-
-	if(cellAtTileCoord(LAYER_TRIGGERS, 58, 12) != 0)
-	{
-		runWinGame(deltaTime);
-		gameState = STATE_WINGAME;
-	}*/
 }
 
 function runGameOver(deltaTime)

@@ -221,6 +221,12 @@ Player.prototype.update = function(deltaTime)
 	}
 
 	player.falling = !(celldown || (nx && celldiag));
+
+	if(cellAtTileCoord(LAYER_TRIGGERS, tx, ty) == true)
+	{
+		gameState = STATE_WINGAME;
+		runWinGame(deltaTime);
+	}
 }
 
 Player.prototype.draw = function()
