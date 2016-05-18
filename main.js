@@ -32,10 +32,11 @@ function getDeltaTime()
 var SCREEN_WIDTH = canvas.width;
 var SCREEN_HEIGHT = canvas.height;
 
-var LAYER_COUNT = 3;
+var LAYER_COUNT = 4;
 var LAYER_BACKGROUND = 0;
 var LAYER_PLATFORMS = 1;
 var LAYER_LADDERS = 2;
+var LAYER_TRIGGERS = 3;
 var TILESET_PADDING = 2;
 var TILESET_SPACING = 2;
 var TILESET_COUNT_X = 14;
@@ -48,7 +49,7 @@ var score = 0;
 
 var lives = 3;
 
-var time = 5;
+var time = 60;
 
 var worldOffsetX = 0;
 
@@ -86,6 +87,7 @@ var keyboard = new Keyboard();
 var STATE_SPLASH = 0;
 var STATE_GAME = 1;
 var STATE_GAMEOVER = 2;
+var STATE_WINGAME = 3;
 
 var gameState = STATE_SPLASH;
 
@@ -98,6 +100,8 @@ switch(gameState)
 	case STATE_GAME: 		//process the game state
 		break;
 	case STATE_GAMEOVER: 	//process the gameover state
+		break;
+	case STATE_WINGAME: 	//process the wingame state
 		break;
 }
 
@@ -136,6 +140,36 @@ var cells =[];
 function initialize()
 {
 	for(var layerIdx = 0; layerIdx < LAYER_COUNT; layerIdx++)
+	{
+		cells[layerIdx] = [];
+		var idx = 0;
+		for(var y = 0; y < level1.layers[layerIdx].height; y++)
+		{
+			cells[layerIdx][y] = [];
+			for(var x = 0; x < level1.layers[layerIdx].width; x++)
+			{
+				if(level1.layers[layerIdx].data[idx] !=0)
+				{
+					/*
+						for each tile we find in the layer data, we need to create 4 collisions
+						(becjause out collision squares are 35x35 but the tile in the level
+						are 70x70)
+					*/
+					cells[layerIdx][y][x] = 1;
+					cells[layerIdx][y-1][x] = 1;
+					cells[layerIdx][y-1][x+1] = 1;
+					cells[layerIdx][y][x+1] = 1;
+				}
+				else if(cells[layerIdx][y][x] !=1)
+				{
+					cells[layerIdx][y][x] = 0; 	//if the value of the cell isnt set. set it to 0 now.
+				}
+				idx++;
+			}
+		}
+	}
+
+	for(var layerIdx = 0; layerIdx < LAYER_TRIGGERS; layerIdx++)
 	{
 		cells[layerIdx] = [];
 		var idx = 0;
@@ -269,7 +303,7 @@ function runSplash(deltaTime)
 		splashTimer = 3;
 		player.isDead = false;
 		score = 0;
-		time = 5;
+		time = 60;
 
 		gameState = STATE_GAME;
 		return;
@@ -343,6 +377,15 @@ function runGame(deltaTime)
 
 		gameState = STATE_GAMEOVER;
 	}
+
+	var triggerX = pixelToTile(player.position.x);
+	var triggerY = pixelToTile(player.position.y);
+
+	if(cellAtTileCoord(3, 58, 12) != 0)
+	{
+		runWinGame(deltaTime);
+		gameState = STATE_WINGAME;
+	}
 }
 
 function runGameOver(deltaTime)
@@ -387,6 +430,9 @@ function run()
 				break;
 		case STATE_GAMEOVER:
 				runGameOver(deltaTime);
+				break;
+		case STATE_WINGAME:
+				runWinGame(deltaTime);
 				break;
 	}
 
