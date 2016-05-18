@@ -169,7 +169,7 @@ function initialize()
 		}
 	}
 
-	for(var layerIdx = 0; layerIdx < LAYER_TRIGGERS; layerIdx++)
+	for(var layerIdx = 0; layerIdx < LAYER_COUNT; layerIdx++)
 	{
 		cells[layerIdx] = [];
 		var idx = 0;
@@ -374,18 +374,17 @@ function runGame(deltaTime)
 		lives = 0;
 		player.isDead = true;
 		runGameOver(deltaTime);
-
 		gameState = STATE_GAMEOVER;
 	}
 
-	var triggerX = pixelToTile(player.position.x);
-	var triggerY = pixelToTile(player.position.y);
+	/*var triggerX = pixelToTile(58 * TILE);
+	var triggerY = pixelToTile(12 * TILE);
 
-	if(cellAtTileCoord(3, 58, 12) != 0)
+	if(cellAtTileCoord(LAYER_TRIGGERS, 58, 12) != 0)
 	{
 		runWinGame(deltaTime);
 		gameState = STATE_WINGAME;
-	}
+	}*/
 }
 
 function runGameOver(deltaTime)
@@ -397,17 +396,29 @@ function runGameOver(deltaTime)
 	context.fillStyle = "#FFFFFF";
 	context.fillText("Your Score: " +score, 230, 280);
 
-	sfx.pause();
+	sfx.mute();
 }
 
 function runWinGame(deltaTime)
 {
 	context.fillStyle = "#FFFFFF";
-	context.font = "48px Arial";
-	context.fillStyle = "#FF0000";
+	context.font = "64px Arial";
+	context.fillStyle = "green";
 	context.fillText("You Win!", 200, 200);
 	context.fillStyle = "#FFFFFF";
 	context.fillText("Your Score, " +score, 230, 280);
+	context.fillStyle = "green";
+	context.fillText("You Win!", 100, 100);
+	context.fillStyle = "green";
+	context.fillText("You Win!", 400, 138);
+	context.fillStyle = "green";
+	context.fillText("You Win!", 50, 150);
+	context.fillStyle = "green";
+	context.fillText("You Win!", 350, 100);
+	context.fillStyle = "green";
+	context.fillText("You Win!", 460, 350);
+	context.fillStyle = "green";
+	context.fillText("You Win!", 580, 230);
 }
 
 function run()
