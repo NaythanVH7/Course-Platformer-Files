@@ -54,6 +54,7 @@ var Player = function()
 	this.jumping = false;
 
 	this.direction = LEFT;
+}
 
 Player.prototype.update = function(deltaTime)
 {

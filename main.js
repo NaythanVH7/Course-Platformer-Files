@@ -312,7 +312,7 @@ function runGame(deltaTime)
 	//life counter
 	for(var i=0; i<lives; i++)
 	{
-		context.drawImage(heart, 20 + ((heart.width+2)*1), 10);
+		context.drawImage(heart, 20 + ((heart.width+2)*1) + (i * 35), 10);
 	}
 
 	if(player.position.y > SCREEN_HEIGHT)
@@ -326,7 +326,7 @@ function runGame(deltaTime)
 	{
 		player.isDead = true;
 		runGameOver(deltaTime);
-		//gameState = STATE_GAMEOVER;
+		gameState = STATE_GAMEOVER;
 	}
 
 	time -= deltaTime;
@@ -340,6 +340,8 @@ function runGame(deltaTime)
 		lives = 0;
 		player.isDead = true;
 		runGameOver(deltaTime);
+
+		gameState = STATE_GAMEOVER;
 	}
 }
 
@@ -351,6 +353,8 @@ function runGameOver(deltaTime)
 	context.fillText("Game Over", 240, 240);
 	context.fillStyle = "#FFFFFF";
 	context.fillText("Your Score: " +score, 230, 280);
+
+	sfx.pause();
 }
 
 function runWinGame(deltaTime)
