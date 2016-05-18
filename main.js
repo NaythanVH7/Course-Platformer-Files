@@ -101,7 +101,6 @@ switch(gameState)
 		break;
 }
 
-
 var music = new Howl(
 {
 	urls: ["background.ogg"],
@@ -270,6 +269,7 @@ function runSplash(deltaTime)
 		splashTimer = 3;
 		player.isDead = false;
 		score = 0;
+		time = 5;
 
 		gameState = STATE_GAME;
 		return;
@@ -326,6 +326,7 @@ function runGame(deltaTime)
 	{
 		player.isDead = true;
 		runGameOver(deltaTime);
+		//gameState = STATE_GAMEOVER;
 	}
 
 	time -= deltaTime;
