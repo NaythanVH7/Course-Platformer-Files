@@ -110,9 +110,9 @@ var music = new Howl(
 	urls: ["background.ogg"],
 	loop: true,
 	buffer: true,
-	volume: 0.3
+	volume: 0.1
 } );
-music.play();
+//music.play();
 
 var sfx = new Howl(
 {
@@ -295,8 +295,10 @@ function runSplash(deltaTime)
 	{
 		splashTimer = 3;
 		player.isDead = false;
-		score = 0;
+		//score = 0;
 		time = 60;
+
+		music.play();
 
 		gameState = STATE_GAME;
 		return;
@@ -330,11 +332,12 @@ function runGame(deltaTime)
 	context.font="14px Arial";
 	context.fillText("FPS: " + fps, 5, 20, 100);
 
-	//score
-	context.fillStyle = "yellow";
+	//score - leaving the score code in here because i will add enemies to kill and increase the score.
+	/*context.fillStyle = "yellow";
 	context.font="32px Arial";
 	var scoreText = "Score: " + score;
 	context.fillText(scoreText, SCREEN_WIDTH - 170, 35);
+	*/
 
 	//life counter
 	for(var i=0; i<lives; i++)
@@ -386,11 +389,12 @@ function runGameOver(deltaTime)
 function runWinGame(deltaTime)
 {
 	context.fillStyle = "#FFFFFF";
-	context.font = "64px Arial";
+	context.font = "24px Arial";
 	context.fillStyle = "green";
 	context.fillText("You Win!", 200, 200);
 	context.fillStyle = "#FFFFFF";
-	context.fillText("Your Score, " +score, 230, 280);
+	//context.fillText("Your Score, " +score, 230, 280);
+	context.fillText("Congrats, You Win!", 200, 300)
 	context.fillStyle = "green";
 	context.fillText("You Win!", 100, 100);
 	context.fillStyle = "green";
