@@ -118,6 +118,10 @@ var music = new Howl(
 	buffer: true,
 	volume: 0.1
 } );
+<<<<<<< HEAD
+=======
+//music.play();
+>>>>>>> origin/master
 
 var sfx = new Howl(
 {
