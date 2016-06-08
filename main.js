@@ -32,11 +32,12 @@ function getDeltaTime()
 var SCREEN_WIDTH = canvas.width;
 var SCREEN_HEIGHT = canvas.height;
 
-var LAYER_COUNT = 4;
+var LAYER_COUNT = 3;
 var LAYER_BACKGROUND = 0;
 var LAYER_PLATFORMS = 1;
 var LAYER_LADDERS = 2;
-var LAYER_TRIGGERS = 3;
+var LAYER_OBJECT_TRIGGERS = 3;
+var LAYER_OBJECT_ENEMIES = 4;
 var TILESET_PADDING = 2;
 var TILESET_SPACING = 2;
 var TILESET_COUNT_X = 14;
@@ -44,6 +45,9 @@ var TILESET_COUNT_Y = 14;
 var TILE = 35;
 var TILESET_TILE = TILE * 2;
 var MAP = {tw: 60, th: 15};
+
+var ENEMY_MAXDX = METER * 5;
+var ENEMY_ACCEL = ENEMY_MAXDX * 2;
 
 var score = 0;
 
@@ -55,7 +59,7 @@ var worldOffsetX = 0;
 
 var METER = TILE; //abitrary choice for 1m
 
-var GRAVITY = METER * 9.8 * 6;  //very exaggerated gravity (6x)
+var GRAVITY = METER * 9.8 * 3;  //very exaggerated gravity (6x)
 
 var MAXDX = METER * 10; // max horizontal speed ( 10 tiles per second)
 
@@ -66,6 +70,8 @@ var ACCEL = MAXDX * 2; //horizontal acceleration - take 1/2 second to reach maxd
 var FRICTION = MAXDX * 6; //horizontal friction - take 1/6 second to stop from maxdx
 
 var JUMP = METER * 1500; // a large instantaneous jump impulse
+
+var enemies = [];
 
 
 // some variables to calculate the Frames Per Second (FPS - this tells use
@@ -110,9 +116,8 @@ var music = new Howl(
 	urls: ["background.ogg"],
 	loop: true,
 	buffer: true,
-	volume: 0.3
+	volume: 0.1
 } );
-music.play();
 
 var sfx = new Howl(
 {
@@ -122,19 +127,6 @@ var sfx = new Howl(
 	loop: false
 } );
 
-
-		//adds colours to the platforms that the player will collide with.
-/*function DrawLevelCollisionData(tileLayer) {
-    for (var y = 0; y < level1.layers[tileLayer].height; y++) {
-        for (var x = 0; x < level1.layers[tileLayer].width; x++) {
-            if (cells[tileLayer][y][x] == 1) {
-                context.fillStyle = "#F00";
-                context.fillRect(TILE * x, TILE * y, TILE, TILE);
-            }
-        }
-    }
-}*/
-
 var cells =[];
 
 function initialize()
@@ -143,12 +135,12 @@ function initialize()
 	{
 		cells[layerIdx] = [];
 		var idx = 0;
-		for(var y = 0; y < level1.layers[layerIdx].height; y++)
+		for(var y = 0; y < level2.layers[layerIdx].height; y++)
 		{
 			cells[layerIdx][y] = [];
-			for(var x = 0; x < level1.layers[layerIdx].width; x++)
+			for(var x = 0; x < level2.layers[layerIdx].width; x++)
 			{
-				if(level1.layers[layerIdx].data[idx] !=0)
+				if(level2.layers[layerIdx].data[idx] !=0)
 				{
 					/*
 						for each tile we find in the layer data, we need to create 4 collisions
@@ -170,28 +162,43 @@ function initialize()
 	}
 
 	//initialize trigger layer in collision map.
-	cells[LAYER_TRIGGERS] = [];
+	cells[LAYER_OBJECT_TRIGGERS] = [];
 	idx = 0;
-	for(var y = 0; y < level1.layers[LAYER_TRIGGERS].height; y++)
+	for(var y = 0; y < level2.layers[LAYER_OBJECT_TRIGGERS].height; y++)
 	{
-		cells[LAYER_TRIGGERS][y] = [];
-		for(var x = 0; x < level1.layers[LAYER_TRIGGERS].width; x++)
+		cells[LAYER_OBJECT_TRIGGERS][y] = [];
+		for(var x = 0; x < level2.layers[LAYER_OBJECT_TRIGGERS].width; x++)
 		{
-			if(level1.layers[LAYER_TRIGGERS].data[idx] != 0)
+			if(level2.layers[LAYER_OBJECT_TRIGGERS].data[idx] != 0)
 			{
-				cells[LAYER_TRIGGERS][y][x] = 1;
-				cells[LAYER_TRIGGERS][y-1][x] = 1;
-				cells[LAYER_TRIGGERS][y-1][x+1] = 1;
-				cells[LAYER_TRIGGERS][y][x+1] = 1;
+				cells[LAYER_OBJECT_TRIGGERS][y][x] = 1;
+				cells[LAYER_OBJECT_TRIGGERS][y-1][x] = 1;
+				cells[LAYER_OBJECT_TRIGGERS][y-1][x+1] = 1;
+				cells[LAYER_OBJECT_TRIGGERS][y][x+1] = 1;
 			}
-			else if(cells[LAYER_TRIGGERS][y][x] !=1)
+			else if(cells[LAYER_OBJECT_TRIGGERS][y][x] !=1)
 			{
-				cells[LAYER_TRIGGERS][y][x] = 0;
+				cells[LAYER_OBJECT_TRIGGERS][y][x] = 0;
 			}
 			idx++;
 		}
 	}
 }
+	idx = 0;
+	for(var y = 0; y < level2.layers[LAYER_OBJECT_ENEMIES].height; y++)
+		{
+			for(var x = 0; x < level2.layers[LAYER_OBJECT_ENEMIES].width; x++)
+			{
+				if(level2.layers[LAYER_OBJECT_ENEMIES].data[idx] !=0)
+				{
+					var px = tileToPixel(x);
+					var py = tileToPixel(y);
+					var e = new Enemy(px, py);
+					enemies.push(e);
+				}
+				idx++;
+			}
+		}
 
 function cellAtPixelCoord(layer, x, y)
 {
@@ -210,7 +217,7 @@ function cellAtTileCoord(layer, tx, ty)
 		return 1;
 	//let the player fall past the bottom of the screen
 	//if so, player dies.
-	if(ty>=MAP.th)
+	if(ty>=MAP.th || ty < 0)
 		return 0;
 	return cells[layer][ty][tx];
 };
@@ -239,6 +246,8 @@ function drawMap()
 	var startX = -1;
 	var maxTiles = Math.floor(SCREEN_WIDTH / TILE) + 2;
 	var tileX = pixelToTile(player.position.x);
+
+console.log(player.position.x);
 	var offsetX = TILE + Math.floor(player.position.x%TILE);
 
 	startX = tileX - Math.floor(maxTiles / 2);
@@ -255,17 +264,15 @@ function drawMap()
 	}
 
 	worldOffsetX = startX * TILE + offsetX;
-	console.log(offsetX);
-
 
 	for(var layerIdx=0; layerIdx<LAYER_COUNT; layerIdx++)
 	{
-		for(var y=0; y<level1.layers[layerIdx].height; y++)
+		for(var y=0; y<level2.layers[layerIdx].height; y++)
 		{
-			var idx = y * level1.layers[layerIdx].width + startX;
+			var idx = y * level2.layers[layerIdx].width + startX;
 			for(var x = startX; x < startX + maxTiles; x++)
 			{
-				if(level1.layers[layerIdx].data[idx] !=0)
+				if(level2.layers[layerIdx].data[idx] !=0)
 				{
 					/*
 						the tiles in the Tiled map are base 1
@@ -273,7 +280,7 @@ function drawMap()
 						so subtract one from the tileset if
 						to get the correct tile
 					*/
-					var tileIndex = level1.layers[layerIdx].data[idx] - 1;
+					var tileIndex = level2.layers[layerIdx].data[idx] - 1;
 					var sx = TILESET_PADDING + (tileIndex % TILESET_COUNT_X) *
 					(TILESET_TILE + TILESET_SPACING);
 					var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * 
@@ -288,6 +295,16 @@ function drawMap()
 	}
 }
 
+function intersects(x1, y1, w1, h1, x2, y2, w2, h2)
+{
+	if(y2 + h2 < y1 || x2 + w2 < x1 ||
+		x2 > x1 + w1 || y2 > y1 + h1)
+	{
+		return false;
+	}
+	return true;
+}
+
 function runSplash(deltaTime)
 {
 	splashTimer -= deltaTime;
@@ -295,8 +312,10 @@ function runSplash(deltaTime)
 	{
 		splashTimer = 3;
 		player.isDead = false;
-		score = 0;
+		//score = 0;
 		time = 60;
+
+		music.play();
 
 		gameState = STATE_GAME;
 		return;
@@ -330,11 +349,12 @@ function runGame(deltaTime)
 	context.font="14px Arial";
 	context.fillText("FPS: " + fps, 5, 20, 100);
 
-	//score
-	context.fillStyle = "yellow";
+	//score - leaving the score code in here because i will add enemies to kill and increase the score.
+	/*context.fillStyle = "yellow";
 	context.font="32px Arial";
 	var scoreText = "Score: " + score;
 	context.fillText(scoreText, SCREEN_WIDTH - 170, 35);
+	*/
 
 	//life counter
 	for(var i=0; i<lives; i++)
@@ -344,8 +364,8 @@ function runGame(deltaTime)
 
 	if(player.position.y > SCREEN_HEIGHT)
 	{
-		player.position.x = SCREEN_WIDTH / 2;
-		player.position.y = SCREEN_HEIGHT / 2;
+		player.position.x = 2 * TILE;
+		player.position.y = 5 * TILE;
 		lives = lives -1;
 	}
 
@@ -354,6 +374,38 @@ function runGame(deltaTime)
 		player.isDead = true;
 		runGameOver(deltaTime);
 		gameState = STATE_GAMEOVER;
+	}
+
+	for(var i = 0; i < enemies.length; i++)
+	{
+		enemies[i].update(deltaTime);
+
+		if(player.isDead == false)
+		{
+			cells[LAYER_OBJECT_ENEMIES] = [];
+			idx = 0;
+			for(var y = 0; y < level2.layers[LAYER_OBJECT_ENEMIES].height; y++)
+			{
+				cells[LAYER_OBJECT_ENEMIES][y] = [];
+				for(var x = 0; x < level2.layers[LAYER_OBJECT_ENEMIES].width; x++)
+				{
+					if(level2.layers[LAYER_OBJECT_ENEMIES].data[idx] != 0)
+					{
+						cells[LAYER_OBJECT_ENEMIES][y][x] = 1;
+						cells[LAYER_OBJECT_ENEMIES][y-1][x] = 1;
+						cells[LAYER_OBJECT_ENEMIES][y-1][x+1] = 1;
+						cells[LAYER_OBJECT_ENEMIES][y][x+1] = 1;
+					}
+					else if(cells[LAYER_OBJECT_ENEMIES][y][x] !=1)
+					{
+						cells[LAYER_OBJECT_ENEMIES][y][x] = 0;
+					}
+					idx++;
+				}
+			}
+		}
+
+		enemies[i].draw();
 	}
 
 	time -= deltaTime;
@@ -380,17 +432,18 @@ function runGameOver(deltaTime)
 	context.fillStyle = "#FFFFFF";
 	context.fillText("Your Score: " +score, 230, 280);
 
-	sfx.mute();
+	sfx.stop();
 }
 
 function runWinGame(deltaTime)
 {
 	context.fillStyle = "#FFFFFF";
-	context.font = "64px Arial";
+	context.font = "24px Arial";
 	context.fillStyle = "green";
 	context.fillText("You Win!", 200, 200);
 	context.fillStyle = "#FFFFFF";
-	context.fillText("Your Score, " +score, 230, 280);
+	//context.fillText("Your Score, " +score, 230, 280);
+	context.fillText("Congrats, You Win!", 200, 300)
 	context.fillStyle = "green";
 	context.fillText("You Win!", 100, 100);
 	context.fillStyle = "green";
@@ -403,6 +456,8 @@ function runWinGame(deltaTime)
 	context.fillText("You Win!", 460, 350);
 	context.fillStyle = "green";
 	context.fillText("You Win!", 580, 230);
+
+	sfx.stop();
 }
 
 function run()
@@ -430,8 +485,6 @@ function run()
 				runWinGame(deltaTime);
 				break;
 	}
-
-
 }
 
 initialize();
