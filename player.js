@@ -119,6 +119,14 @@ Player.prototype.update = function(deltaTime)
 		}*/
 	}
 
+	if(keyboard.isKeyDown(keyboard.KEY_S) == true)
+	{
+		bullet.draw();
+		shootTimer += 0.3;
+		shoot.play();
+
+	}
+
 	var wasleft = this.velocity.x < 0;
 	var wasright = this.velocity.x > 0;
 	var falling = this.falling;

@@ -3,9 +3,6 @@ scorpion.src = "scorpion.png";
 
 var Enemy = function(x, y)
 {
-	//this.sprite = new Sprite("bat.png");
-	//this.sprite.buildAnimation(2, 1, 88, 94, 0.3, [0,1]);
-	//this.sprite.setAnimationOffset(0, -35, -40);
 
 	this.position = new Vector2();
 	this.position.set(35*TILE, 4.3*TILE);
@@ -18,7 +15,6 @@ var Enemy = function(x, y)
 
 Enemy.prototype.update = function(deltaTime)
 {
-	//this.sprite.update(deltaTime);
 
 	if(this.pause > 0)
 	{
