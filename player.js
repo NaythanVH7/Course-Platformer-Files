@@ -119,22 +119,31 @@ Player.prototype.update = function(deltaTime)
 		}*/
 	}
 
-
-	var shootTimer = 1;
-	if(keyboard.isKeyDown(keyboard.KEY_S) == true)
-	{
-		
-		bullets.push(bullet);
-		shootTimer += 0.3;
-		shoot.play();
-
-	}
-
 	var wasleft = this.velocity.x < 0;
 	var wasright = this.velocity.x > 0;
 	var falling = this.falling;
 	var ddx = 0; 		//acceleration
 	var ddy = GRAVITY;
+
+	var shootTimer = 1;
+	if(keyboard.isKeyDown(keyboard.KEY_S) == true)
+	{
+		var bullet;
+		if(this.direction == LEFT)
+		{
+			bullet = new Bullet(player.x, player.y, false);
+		}
+		else
+		{
+			bullet = new Bullet(player.x, player.y, true);
+		}
+		//var bullet = new Bullet(player.x, player.y, );
+		bullets.push(bullet);
+		shootTimer += 0.3;
+		shoot.play();
+
+
+	}
 
 	if (left)
 	{

@@ -428,7 +428,7 @@ function runGame(deltaTime)
 		{
 			hit = true;
 		} 
-		//if(var j=0; j<enemies.length; j++)
+		for(var j=0; j<enemies.length; j++)
 		{
 			if(intersects( bullets[i].position.x, bullets[i].position.y, TILE, TILE,
 								enemies[j].position.x, enemies[j].position.y, TILE, TILE) == true)
