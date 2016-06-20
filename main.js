@@ -341,11 +341,9 @@ function runSplash(deltaTime)
 function runGame(deltaTime)
 {
 	player.update(deltaTime);
-	//bullet.update(deltaTime);
 
 	drawMap();
 	player.draw();
-	//bullet.draw();
 
 	// update the frame counter 
 	fpsTime += deltaTime;
@@ -449,6 +447,7 @@ function runGame(deltaTime)
 			bullets.splice(i, 1);
 			break;
 		}
+		bullets[i].draw();
 	}
 
 	time -= deltaTime;
