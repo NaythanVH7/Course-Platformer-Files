@@ -55,11 +55,14 @@ var Player = function()
 
 	this.direction = LEFT;
 	isDead = false;
+
+	this.shootTimer = 0.3;
 }
 
 Player.prototype.update = function(deltaTime)
 {
 	this.sprite.update(deltaTime);
+	console.log(this.position.x, this.position.y);
 
 	var left = false;
 	var right = false;
@@ -112,11 +115,6 @@ Player.prototype.update = function(deltaTime)
 		{
 			this.sprite.setAnimation(ANIM_JUMP_RIGHT);
 		}
-
-		/*if(jump && !this.jumping && !falling == true)
-		{
-			sfx.play();
-		}*/
 	}
 
 	var wasleft = this.velocity.x < 0;
@@ -125,10 +123,12 @@ Player.prototype.update = function(deltaTime)
 	var ddx = 0; 		//acceleration
 	var ddy = GRAVITY;
 
-	var shootTimer = 1;
 	if(keyboard.isKeyDown(keyboard.KEY_S) == true)
 	{
-		var bullet;
+
+		if(this.shootTimer <= 0)
+		{
+			var bullet;
 		if(this.direction == LEFT)
 		{
 			bullet = new Bullet(player.x, player.y, false);
@@ -137,12 +137,47 @@ Player.prototype.update = function(deltaTime)
 		{
 			bullet = new Bullet(player.x, player.y, true);
 		}
-		//var bullet = new Bullet(player.x, player.y, );
+
+
+
 		bullets.push(bullet);
-		shootTimer += 0.3;
+		this.shootTimer += 0.3;
 		shoot.play();
+		}
+	}
 
+	this.shootTimer -= deltaTime;
 
+	if(this.shootTimer <= 0)
+	{
+		this.shootTimer = 0;
+	}
+
+				//update all the bullets
+	for(var i=0; i<bullets.length; i++)
+	{
+		bullets[i].x += bullets[i].velocityX;
+		bullets[i].y += bullets[i].velocityY;
+	}
+
+	for(var i=0; i<bullets.length; i++)
+	{
+				//check if the bullet has gone out of the screen boundaries
+				//and if so kill it
+		if(bullets[i].x < -bullets[i].width ||
+							bullets[i].x > SCREEN_WIDTH ||
+							bullets[i].y < -bullets[i].height ||
+							bullets[i].y > SCREEN_HEIGHT)
+		{
+				//remove 1 element at position i
+	bullets.splice(i, 1);
+				/*
+					because we are deleting elements for the middle
+					of the array, we can only remove 1 at a time.
+					so as soon as we remove 1 bullet stop.
+				*/
+				break;
+		}
 	}
 
 	if (left)

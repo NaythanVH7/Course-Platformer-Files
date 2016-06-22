@@ -32,10 +32,9 @@ Enemy.prototype.update = function(deltaTime)
 		var cellright = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty);
 		var celldown = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
 		var celldiag = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty + 1);
-
 		if(this.moveRight)
 		{
-			if(celldiag && !cellright)
+			if(this.position.x < 1300)
 			{
 				ddx = ddx + 350; 		//enemy wants to go right
 			}
@@ -49,7 +48,7 @@ Enemy.prototype.update = function(deltaTime)
 
 		if(!this.moveRight)
 		{
-			if(celldown && !cell)
+			if(this.position.x > 1000)
 			{
 				ddx = ddx - 350; 		//enemy wants to go left
 			}
@@ -60,10 +59,10 @@ Enemy.prototype.update = function(deltaTime)
 				this.pause = 0.5;
 			}
 		}
-
-		this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));
+		console.log(celldiag);
 		this.velocity.x = bound(this.velocity.x + (deltaTime * ddx), 
 													-ENEMY_MAXDX, ENEMY_MAXDX)
+		this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));
 	}
 }
 

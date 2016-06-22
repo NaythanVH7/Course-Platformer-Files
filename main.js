@@ -91,6 +91,7 @@ heart.src = "heart.png";
 
 var player = new Player();
 var keyboard = new Keyboard();
+var coin = new Coin();
 
 var STATE_SPLASH = 0;
 var STATE_GAME = 1;
@@ -323,7 +324,7 @@ function runSplash(deltaTime)
 	{
 		splashTimer = 3;
 		player.isDead = false;
-		//score = 0;
+		score = 0;
 		time = 60;
 
 		music.play();
@@ -342,8 +343,12 @@ function runGame(deltaTime)
 {
 	player.update(deltaTime);
 
+	coin.update(deltaTime);
+
 	drawMap();
 	player.draw();
+
+	coin.draw();
 
 	// update the frame counter 
 	fpsTime += deltaTime;
@@ -361,18 +366,18 @@ function runGame(deltaTime)
 	context.fillText("FPS: " + fps, 5, 20, 100);
 
 	//score - leaving the score code in here because i will add enemies to kill and increase the score.
-	/*context.fillStyle = "yellow";
+	context.fillStyle = "yellow";
 	context.font="32px Arial";
 	var scoreText = "Score: " + score;
 	context.fillText(scoreText, SCREEN_WIDTH - 170, 35);
-	*/
+	
 
 	//life counter
 	for(var i=0; i<lives; i++)
 	{
 		context.drawImage(heart, 20 + ((heart.width+2)*1) + (i * 35), 10);
 	}
-
+		//when the player falls below the screen Y resets and loses a life
 	if(player.position.y > SCREEN_HEIGHT)
 	{
 		player.position.x = 2 * TILE;
@@ -391,31 +396,6 @@ function runGame(deltaTime)
 	{
 		enemies[i].update(deltaTime);
 
-		if(player.isDead == false)
-		{
-			cells[LAYER_OBJECT_ENEMIES] = [];
-			idx = 0;
-			for(var y = 0; y < level2.layers[LAYER_OBJECT_ENEMIES].height; y++)
-			{
-				cells[LAYER_OBJECT_ENEMIES][y] = [];
-				for(var x = 0; x < level2.layers[LAYER_OBJECT_ENEMIES].width; x++)
-				{
-					if(level2.layers[LAYER_OBJECT_ENEMIES].data[idx] != 0)
-					{
-						cells[LAYER_OBJECT_ENEMIES][y][x] = 1;
-						cells[LAYER_OBJECT_ENEMIES][y-1][x] = 1;
-						cells[LAYER_OBJECT_ENEMIES][y-1][x+1] = 1;
-						cells[LAYER_OBJECT_ENEMIES][y][x+1] = 1;
-					}
-					else if(cells[LAYER_OBJECT_ENEMIES][y][x] !=1)
-					{
-						cells[LAYER_OBJECT_ENEMIES][y][x] = 0;
-					}
-					idx++;
-				}
-			}
-		}
-
 		enemies[i].draw();
 	}
 
@@ -431,7 +411,7 @@ function runGame(deltaTime)
 		for(var j=0; j<enemies.length; j++)
 		{
 			if(intersects( bullets[i].position.x, bullets[i].position.y, TILE, TILE,
-								enemies[j].position.x, enemies[j].position.y, TILE, TILE) == true)
+								enemies[j].position.x + TILE * 1.5, enemies[j].position.y + TILE, TILE, TILE) == true)
 			{
 					//kill both the bullet and the enemy
 				enemies.splice(j, 1);
@@ -449,6 +429,7 @@ function runGame(deltaTime)
 		}
 		bullets[i].draw();
 	}
+	
 
 	time -= deltaTime;
 
