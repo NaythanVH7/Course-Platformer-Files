@@ -429,6 +429,19 @@ function runGame(deltaTime)
 		}
 		bullets[i].draw();
 	}
+
+	/*var touch = false;
+	//if(intersects(player.position.x, player.position.y, enemies.position.x + TILE * 1.5, enemies.position.y + TILE) == true)
+	{
+		touch = true;
+	}
+
+	if(touch = true)
+	{
+		player.position.x = 2 * TILE;
+		player.position.y = 5 * TILE;
+		lives = lives -1;
+	}*/
 	
 
 	time -= deltaTime;

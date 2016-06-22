@@ -62,7 +62,6 @@ var Player = function()
 Player.prototype.update = function(deltaTime)
 {
 	this.sprite.update(deltaTime);
-	console.log(this.position.x, this.position.y);
 
 	var left = false;
 	var right = false;

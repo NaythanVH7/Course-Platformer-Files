@@ -59,7 +59,7 @@ Enemy.prototype.update = function(deltaTime)
 				this.pause = 0.5;
 			}
 		}
-		console.log(celldiag);
+		
 		this.velocity.x = bound(this.velocity.x + (deltaTime * ddx), 
 													-ENEMY_MAXDX, ENEMY_MAXDX)
 		this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));
