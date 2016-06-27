@@ -75,6 +75,11 @@ var enemies = [];
 
 var bullets = [];
 
+var coins = [];
+coins.push(new Coin());
+
+var coinPickup = false;
+
 
 // some variables to calculate the Frames Per Second (FPS - this tells use
 // how fast our game is running, and allows us to make the game run at a 
@@ -91,7 +96,6 @@ heart.src = "heart.png";
 
 var player = new Player();
 var keyboard = new Keyboard();
-var coin = new Coin();
 
 var STATE_SPLASH = 0;
 var STATE_GAME = 1;
@@ -343,12 +347,8 @@ function runGame(deltaTime)
 {
 	player.update(deltaTime);
 
-	coin.update(deltaTime);
-
 	drawMap();
 	player.draw();
-
-	coin.draw();
 
 	// update the frame counter 
 	fpsTime += deltaTime;
@@ -396,7 +396,34 @@ function runGame(deltaTime)
 	{
 		enemies[i].update(deltaTime);
 
+		if(intersects(
+             enemies[i].position.x + TILE * 1.5 ,enemies[i].position.y + TILE,TILE,TILE,
+             player.position.x,player.position.y,TILE,TILE ))
+             {
+                player.position.x = 2 * TILE;
+                player.position.y = 5 * TILE;
+                lives = lives -1;
+             }
+
 		enemies[i].draw();
+	}
+
+	
+	for(var i = 0; i < coins.length; i++)
+	{
+		coins[i].update(deltaTime);
+
+		if(intersects(
+			coins[i].position.x + TILE * 1.5, coins[i].position.y + TILE, TILE, TILE,
+			player.position.x, player.position.y, TILE, TILE ))
+			{
+				coinPickup = true;
+				console.log(coinPickup);
+				coins.splice(i, 1);
+				break;
+			}
+
+		coins[i].draw();
 	}
 
 	var hit = false;
@@ -429,19 +456,6 @@ function runGame(deltaTime)
 		}
 		bullets[i].draw();
 	}
-
-	/*var touch = false;
-	//if(intersects(player.position.x, player.position.y, enemies.position.x + TILE * 1.5, enemies.position.y + TILE) == true)
-	{
-		touch = true;
-	}
-
-	if(touch = true)
-	{
-		player.position.x = 2 * TILE;
-		player.position.y = 5 * TILE;
-		lives = lives -1;
-	}*/
 	
 
 	time -= deltaTime;

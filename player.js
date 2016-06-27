@@ -284,8 +284,17 @@ Player.prototype.update = function(deltaTime)
 
 	if(cellAtTileCoord(LAYER_OBJECT_TRIGGERS, tx, ty) == true)
 	{
-		gameState = STATE_WINGAME;
-		runWinGame(deltaTime);
+		if(coinPickup == true)
+		{
+			gameState = STATE_WINGAME;
+			runWinGame(deltaTime);
+		}
+		else if(coinPickup == false)
+		{
+			context.font = "24px Arial";
+			context.fillStyle = "red";
+			context.fillText("YOU NEED THE COIN!", 300, 200);
+		}
 	}
 }
 
