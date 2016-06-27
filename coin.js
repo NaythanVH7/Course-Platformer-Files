@@ -1,6 +1,6 @@
 var Coin = function(x, y)
 {
-	this.sprite = new Sprite("coin.js");
+	this.sprite = new Sprite("coin.png");
 	this.sprite.buildAnimation(6, 1, 32, 32, 0.05, [0, 1, 2, 3, 4, 5]);
 
 	this.position = new Vector2();
