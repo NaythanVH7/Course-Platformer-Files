@@ -105,6 +105,7 @@ Player.prototype.update = function(deltaTime)
 
 	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
 	{
+
 		jump = true;
 		if(left == true)
 		{
@@ -114,6 +115,12 @@ Player.prototype.update = function(deltaTime)
 		{
 			this.sprite.setAnimation(ANIM_JUMP_RIGHT);
 		}
+	}
+
+	if(keyboard.isKeyDown(keyboard.KEY_SPACE) && this.jumping == true)
+	{
+		ddy = ddy - JUMP / 2;
+		console.log(ddy);
 	}
 
 	var wasleft = this.velocity.x < 0;
