@@ -59,7 +59,7 @@ var worldOffsetX = 0;
 
 var METER = TILE; //abitrary choice for 1m
 
-var GRAVITY = METER * 9.8 * 3;  //very exaggerated gravity (6x)
+var GRAVITY = METER * 9.8 * 6;  //very exaggerated gravity (6x)
 
 var MAXDX = METER * 10; // max horizontal speed ( 10 tiles per second)
 

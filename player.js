@@ -117,12 +117,6 @@ Player.prototype.update = function(deltaTime)
 		}
 	}
 
-	if(keyboard.isKeyDown(keyboard.KEY_SPACE) && this.jumping == true)
-	{
-		ddy = ddy - JUMP / 2;
-		console.log(ddy);
-	}
-
 	var wasleft = this.velocity.x < 0;
 	var wasright = this.velocity.x > 0;
 	var falling = this.falling;
@@ -150,6 +144,11 @@ Player.prototype.update = function(deltaTime)
 		this.shootTimer += 0.3;
 		shoot.play();
 		}
+	}
+
+	if(keyboard.isKeyDown(keyboard.KEY_SPACE) && this.jumping == true)
+	{
+		ddy = ddy - JUMP / 40;
 	}
 
 	this.shootTimer -= deltaTime;
