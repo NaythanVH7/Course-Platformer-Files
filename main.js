@@ -142,6 +142,14 @@ var shoot = new Howl(
 	loop: false
 } );
 
+var coinSound = new Howl(
+{
+	urls: ["coinSound.wav"],
+	buffer: true,
+	volume: 1,
+	loop: false
+} );
+
 var cells =[];
 
 function initialize()
@@ -337,9 +345,8 @@ function runSplash(deltaTime)
 		return;
 	}
 
-	context.fillStyle = "#000";
+	context.fillStyle = "red";
 	context.font = "24px Arial";
-	context.fillText("Super Awesome Platforming Adventure", 100, 240);
 	context.fillText("STARTING IN " + splashTimer.toPrecision(3), 200, 350);
 }
 
@@ -418,6 +425,7 @@ function runGame(deltaTime)
 			player.position.x, player.position.y, TILE, TILE ))
 			{
 				coinPickup = true;
+				coinSound.play();
 				console.log(coinPickup);
 				coins.splice(i, 1);
 				break;
