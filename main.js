@@ -95,10 +95,16 @@ var hearts = document.createElement("img");
 hearts.src = "hearts.png";
 
 var mainBG1 = document.createElement("img");
-mainBG1 = "mainBG1.png";
+mainBG1.src = "mainBG1.png";
 
 var goldSkull = document.createElement("img");
 goldSkull.src = "goldSkull.png";
+
+var sadFace = document.createElement("img");
+sadFace.src = "sadFace.png";
+
+var fireWorks = document.createElement("img");
+fireWorks.src = "fireWorks.png";
 
 var player = new Player();
 var keyboard = new Keyboard();
@@ -351,7 +357,7 @@ function runSplash(deltaTime)
 		return;
 	}
 
-	context.drawImage(mainBG1, canvas.width, canvas.height);
+	context.drawImage(mainBG1, 0, 0, canvas.width, canvas.height);
 	context.fillStyle = "black";
 	context.font = "24px Arial";
 	context.fillText("STARTING IN " + splashTimer.toPrecision(3), 200, 350);
@@ -495,6 +501,7 @@ function runGame(deltaTime)
 
 function runGameOver(deltaTime)
 {
+	context.drawImage(sadFace, 0, 0, canvas.width, canvas.height);
 	context.fillStyle = "#FFFFFF";
 	context.font = "24px Arial";
 	context.fillStyle = "#FF0000";
@@ -507,6 +514,7 @@ function runGameOver(deltaTime)
 
 function runWinGame(deltaTime)
 {
+	context.drawImage(fireWorks, 0, 0, canvas.width, canvas.height);
 	context.fillStyle = "#FFFFFF";
 	context.font = "24px Arial";
 	context.fillStyle = "green";
