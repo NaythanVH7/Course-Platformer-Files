@@ -91,8 +91,14 @@ var fpsTime = 0;
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
 
-var heart = document.createElement("img");
-heart.src = "heart.png";
+var hearts = document.createElement("img");
+hearts.src = "hearts.png";
+
+var splashBG = document.createElement("img");
+splashBG = "mainBG1.png";
+
+var goldSkull = document.createElement("img");
+goldSkull.src = "goldSkull.png";
 
 var player = new Player();
 var keyboard = new Keyboard();
@@ -337,7 +343,7 @@ function runSplash(deltaTime)
 		splashTimer = 3;
 		player.isDead = false;
 		score = 0;
-		time = 60;
+		time = 30;
 
 		music.play();
 
@@ -345,7 +351,7 @@ function runSplash(deltaTime)
 		return;
 	}
 
-	context.fillStyle = "red";
+	context.fillStyle = "black";
 	context.font = "24px Arial";
 	context.fillText("STARTING IN " + splashTimer.toPrecision(3), 200, 350);
 }
@@ -373,16 +379,21 @@ function runGame(deltaTime)
 	context.fillText("FPS: " + fps, 5, 20, 100);
 
 	//score - leaving the score code in here because i will add enemies to kill and increase the score.
-	context.fillStyle = "yellow";
+	/*context.fillStyle = "yellow";
 	context.font="32px Arial";
 	var scoreText = "Score: " + score;
-	context.fillText(scoreText, SCREEN_WIDTH - 170, 35);
+	context.fillText(scoreText, SCREEN_WIDTH - 170, 35);*/
+
+	if(score == 1)
+	{
+		context.drawImage(goldSkull, SCREEN_WIDTH - 100, 35);
+	}
 	
 
 	//life counter
 	for(var i=0; i<lives; i++)
 	{
-		context.drawImage(heart, 20 + ((heart.width+2)*1) + (i * 35), 10);
+		context.drawImage(hearts, 20 + ((hearts.width+2)*1) + (i * 35), 10);
 	}
 		//when the player falls below the screen Y resets and loses a life
 	if(player.position.y > SCREEN_HEIGHT)
