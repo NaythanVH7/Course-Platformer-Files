@@ -94,8 +94,8 @@ tileset.src = "tileset.png";
 var hearts = document.createElement("img");
 hearts.src = "hearts.png";
 
-var splashBG = document.createElement("img");
-splashBG = "mainBG1.png";
+var mainBG1 = document.createElement("img");
+mainBG1 = "mainBG1.png";
 
 var goldSkull = document.createElement("img");
 goldSkull.src = "goldSkull.png";
@@ -351,6 +351,7 @@ function runSplash(deltaTime)
 		return;
 	}
 
+	context.drawImage(mainBG1, canvas.width, canvas.height);
 	context.fillStyle = "black";
 	context.font = "24px Arial";
 	context.fillText("STARTING IN " + splashTimer.toPrecision(3), 200, 350);
